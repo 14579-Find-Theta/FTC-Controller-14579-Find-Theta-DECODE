@@ -7,8 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import java.io.CharArrayWriter;
 
 @TeleOp (name = "Mecanum TeleOp Two Drivers", group = "LinearOpMode")
 public class MecanumTeleOpTwoDrivers extends LinearOpMode {
@@ -39,6 +44,8 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         // Find a motor in the hardware map named "frontRightMotor"
         DcMotor motor = hardwareMap.dcMotor.get("frontRightMotor");
 
+        Shooter shooter = new Shooter(hardwareMap);
+        Intake intake = new Intake(hardwareMap);
 
         DesiredAngle1 = -250;
         DesiredAngle2 = -180;
@@ -96,6 +103,10 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
             double Arm_Pos = -angle;
 
+            double LTrigger = gamepad2.left_trigger;
+            intake.runIntake(LTrigger);
+            double RTrigger = gamepad2.right_trigger;
+            shooter.outtakeShoot(RTrigger);
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.

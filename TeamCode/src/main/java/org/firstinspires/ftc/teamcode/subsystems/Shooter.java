@@ -14,19 +14,23 @@ public class Shooter {
     final boolean REVERSEMOTOR = false;
     final boolean REVERSESERVO = false;
 
-    Shooter (HardwareMap map) {
-        shooterMotor = map.get(DcMotor.class, "shooterMotor");
+    public Shooter (HardwareMap map) {
+        shooterMotor = map.get(DcMotor.class, "motor");
         shooterMotor.setDirection(REVERSEMOTOR ? DcMotorSimple.Direction.REVERSE : DcMotorSimple.Direction.FORWARD);
-        shooterServo1 = map.get(CRServo.class, "shooterServo1");
-        shooterServo2 = map.get(CRServo.class, "shooterServo2");
+        shooterServo1 = map.get(CRServo.class, "spin");
+        shooterServo2 = map.get(CRServo.class, "spin1");
 
     }
 
-    void outtakeShoot (double RTrigger) {
+    public void outtakeShoot (double RTrigger) {
         if (Math.abs(RTrigger) > 0.1) {
-            shooterMotor.setPower(LTrigger-RTrigger);
+            shooterMotor.setPower(1);
+            shooterServo1.setPower(REVERSESERVO ? -1 : 1);
+            shooterServo2.setPower(REVERSESERVO ? 1 : -1);
         } else {
-            intakeServo.setPower(0);
+            shooterMotor.setPower(0);
+            shooterServo1.setPower(0);
+            shooterServo2.setPower(0);
         }
     }
 
