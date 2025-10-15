@@ -129,7 +129,7 @@ public class  LimeLightOrientation {
 
                 telemetry.addData("Botpose", botpose.toString());
 
-             /*   List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+                List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fiducial : fiducials) {
                     int id = fiducial.getFiducialId(); // The ID number of the fiducial
                     double x = fiducial.getTargetXDegrees();
@@ -146,49 +146,48 @@ public class  LimeLightOrientation {
                         }
                     }
 
-                }*/
-                // Access barcode results
-                List<LLResultTypes.BarcodeResult> barcodeResults = result.getBarcodeResults();
-                for (LLResultTypes.BarcodeResult br : barcodeResults) {
-                    telemetry.addData("Barcode", "Data: %s", br.getData());
+
+                    // Access barcode results
+                    List<LLResultTypes.BarcodeResult> barcodeResults = result.getBarcodeResults();
+                    for (LLResultTypes.BarcodeResult br : barcodeResults) {
+                        telemetry.addData("Barcode", "Data: %s", br.getData());
+                    }
+
+                    // Access classifier results
+                    List<LLResultTypes.ClassifierResult> classifierResults = result.getClassifierResults();
+                    for (LLResultTypes.ClassifierResult cr : classifierResults) {
+                        telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
+                    }
+
+                    // Access detector results
+                    List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
+                    for (LLResultTypes.DetectorResult dr : detectorResults) {
+                        telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
+                    }
+
+                    // Access fiducial results
+
+                    List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+                    for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                        telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
+                    }
+
+
+                    // Access color results
+
+                    List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
+                    for (LLResultTypes.ColorResult cr : colorResults) {
+                        telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                    }
+
+
+                    telemetry.update();
+
+                    limelight.stop();
                 }
 
-                // Access classifier results
-                List<LLResultTypes.ClassifierResult> classifierResults = result.getClassifierResults();
-                for (LLResultTypes.ClassifierResult cr : classifierResults) {
-                    telemetry.addData("Classifier", "Class: %s, Confidence: %.2f", cr.getClassName(), cr.getConfidence());
-                }
-
-                // Access detector results
-                List<LLResultTypes.DetectorResult> detectorResults = result.getDetectorResults();
-                for (LLResultTypes.DetectorResult dr : detectorResults) {
-                    telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.getClassName(), dr.getTargetArea());
-                }
-
-                // Access fiducial results
-
-                List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-                for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
-                }
-
-
-                // Access color results
-
-                List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
-                for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
-                }
-
-            } else {
-                telemetry.addData("Limelight", "No data available");
             }
-
-            telemetry.update();
-
-            limelight.stop();
         }
-
     }
 }
 
