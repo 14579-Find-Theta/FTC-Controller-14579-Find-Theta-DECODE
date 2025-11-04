@@ -28,8 +28,8 @@ public class Constants {
             .forwardEncoder_HardwareMapName("leftFront")
             .strafeEncoder_HardwareMapName("rightRear")
             .IMU_HardwareMapName("imu")
-            .forwardPodY()
-            .strafePodX()
+            .forwardPodY(8)
+            .strafePodX(8)
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
                             RevHubOrientationOnRobot.LogoFacingDirection.UP,
