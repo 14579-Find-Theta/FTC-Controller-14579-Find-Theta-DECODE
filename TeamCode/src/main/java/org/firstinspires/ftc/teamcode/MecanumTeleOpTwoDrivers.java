@@ -44,6 +44,7 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         //ClawAxon = hardwareMap.get(Servo.class, "ClawAxon");
         // Find a motor in the hardware map named "frontRightMotor"
         DcMotor motor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor outtake = hardwareMap.dcMotor.get("outtake");
 
         //Shooter shooter = new Shooter(hardwareMap);
         //Intake intake = new Intake(hardwareMap);
@@ -77,7 +78,7 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         AngularVelocity myRobotAngularVelocity;
 */
         // Retrieve the IMU from the hardware map
-        GoBildaPinpointDriver imu = hardwareMap.get(GoBildaPinpointDriver.class, "imu");
+       // GoBildaPinpointDriver imu = hardwareMap.get(GoBildaPinpointDriver.class, "imu");
 
         waitForStart();
 
@@ -106,18 +107,36 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             // it can be freely changed based on preference.
             // The equivalent button is start on some controllers.
             if (gamepad1.start) {
-                imu.recalibrateIMU();
+           //     imu.recalibrateIMU();
             }
 
-            double botHeading = imu.getHeading(AngleUnit.RADIANS);
-            double botHeadingMeasure = imu.getHeading(AngleUnit.DEGREES);
-            telemetry.addLine("Field orientation is: " + botHeadingMeasure);
+
+            outtake.setPower(0);
+
+
+            if (gamepad1.b) {
+                outtake.setPower(1);
+            }
+
+           else if (gamepad1.a) {
+                outtake.setPower(-1);
+            }
+//
+//            else {
+//                outtake.setPower(0);
+//            }
+
+
+
+         //   double botHeading = imu.getHeading(AngleUnit.RADIANS);
+           // double botHeadingMeasure = imu.getHeading(AngleUnit.DEGREES);
+           // telemetry.addLine("Field orientation is: " + botHeadingMeasure);
 
             // Rotate the movement direction counter to the bot's rotation
-            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+            //double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            //double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
+            /*rotX = rotX * 1.1;  // Counteract imperfect strafing
 
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
@@ -135,6 +154,9 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
             telemetry.update();
             imu.update();
+
+*/
+
         }
 
     }
