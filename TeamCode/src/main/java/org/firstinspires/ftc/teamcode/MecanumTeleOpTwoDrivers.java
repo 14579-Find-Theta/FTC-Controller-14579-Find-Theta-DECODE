@@ -56,10 +56,10 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         //ArmAxonCR.setDirection(CRServo.Direction.REVERSE);
 
 //Reset the motor encoder so that it reads zero ticks
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+       //  motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // Turn the motor back on, required if you use STOP_AND_RESET_ENCODER
+       // motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         // Reverse the right side motors. This may be wrong.
@@ -77,7 +77,11 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         AngularVelocity myRobotAngularVelocity;
 */
         // Retrieve the IMU from the hardware map
-        GoBildaPinpointDriver imu = hardwareMap.get(GoBildaPinpointDriver.class, "imu");
+        GoBildaPinpointDriver imu = hardwareMap.get(GoBildaPinpointDriver.class, "pinpointimu");
+
+        imu.recalibrateIMU();
+
+        imu.resetPosAndIMU();
 
         waitForStart();
 
@@ -90,12 +94,12 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             double CPR = 8192;
 
             // Get the current position of the motor
-            int position = motor.getCurrentPosition();
-            double revolutions = position / CPR;
+            //int position = motor.getCurrentPosition();
+            //double revolutions = position / CPR;
 
-            double angle = revolutions * 360;
+            //double angle = revolutions * 360;
 
-            double Arm_Pos = -angle;
+            //double Arm_Pos = -angle;
 
             double LTrigger = gamepad2.left_trigger;
             //intake.runIntake(LTrigger);
