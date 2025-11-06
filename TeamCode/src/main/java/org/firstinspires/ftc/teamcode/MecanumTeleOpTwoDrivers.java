@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
@@ -18,8 +19,8 @@ import java.io.CharArrayWriter;
 @TeleOp (name = "Mecanum TeleOp Two Drivers", group = "LinearOpMode")
 public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
-    private CRServo ArmAxonCR;
-    private Servo ClawAxon;
+    //private CRServo ArmAxonCR;
+    //private Servo ClawAxon;
 
     private DcMotor frontRightMotor;
 
@@ -39,20 +40,20 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
-        ArmAxonCR = hardwareMap.get(CRServo.class, "ArmAxonCR");
-        ClawAxon = hardwareMap.get(Servo.class, "ClawAxon");
+      //  ArmAxonCR = hardwareMap.get(CRServo.class, "ArmAxonCR");
+        //ClawAxon = hardwareMap.get(Servo.class, "ClawAxon");
         // Find a motor in the hardware map named "frontRightMotor"
         DcMotor motor = hardwareMap.dcMotor.get("frontRightMotor");
 
-        Shooter shooter = new Shooter(hardwareMap);
-        Intake intake = new Intake(hardwareMap);
+        //Shooter shooter = new Shooter(hardwareMap);
+        //Intake intake = new Intake(hardwareMap);
 
         DesiredAngle1 = -250;
         DesiredAngle2 = -180;
         DesiredAngle3 = -75;
         DesiredAngle4 = -0.1;
         DeadBand = 1;
-        ArmAxonCR.setDirection(CRServo.Direction.REVERSE);
+        //ArmAxonCR.setDirection(CRServo.Direction.REVERSE);
 
 //Reset the motor encoder so that it reads zero ticks
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -65,7 +66,7 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         // If robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Create an object to receive the IMU angles
@@ -76,22 +77,15 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         AngularVelocity myRobotAngularVelocity;
 */
         // Retrieve the IMU from the hardware map
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        // Adjust the orientation parameters to match robot
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-        imu.initialize(parameters);
+        GoBildaPinpointDriver imu = hardwareMap.get(GoBildaPinpointDriver.class, "imu");
 
         waitForStart();
 
         if (isStopRequested()) return;
-
         while (opModeIsActive()) {
-            double y = gamepad1.left_stick_y + gamepad2.left_stick_y / 2; // Y stick value is reversed
+            double y = -gamepad1.left_stick_y + -gamepad2.left_stick_y / 2; // Y stick value is reversed
             double x = -gamepad1.left_stick_x + -gamepad2.left_stick_x / 2;
-            double rx = -gamepad1.right_stick_x + -gamepad2.right_stick_x / 2;
+            double rx = gamepad1.right_stick_x + gamepad2.right_stick_x / 2;
 
             double CPR = 8192;
 
@@ -104,18 +98,20 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             double Arm_Pos = -angle;
 
             double LTrigger = gamepad2.left_trigger;
-            intake.runIntake(LTrigger);
+            //intake.runIntake(LTrigger);
             double RTrigger = gamepad2.right_trigger;
-            shooter.outtakeShoot(RTrigger);
+            //shooter.outtakeShoot(RTrigger);
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on some controllers.
-            if (gamepad1.options) {
-                imu.resetYaw();
+            if (gamepad1.start) {
+                imu.recalibrateIMU();
             }
 
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double botHeading = imu.getHeading(AngleUnit.RADIANS);
+            double botHeadingMeasure = imu.getHeading(AngleUnit.DEGREES);
+            telemetry.addLine("Field orientation is: " + botHeadingMeasure);
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -137,6 +133,8 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
 
+            telemetry.update();
+            imu.update();
         }
 
     }
