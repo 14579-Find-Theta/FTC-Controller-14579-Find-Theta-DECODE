@@ -44,6 +44,8 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
         //ClawAxon = hardwareMap.get(Servo.class, "ClawAxon");
         // Find a motor in the hardware map named "frontRightMotor"
         DcMotor motor = hardwareMap.dcMotor.get("frontRightMotor");
+        DcMotor outtake = hardwareMap.dcMotor.get("outtake");
+        CRServo outtakeServo = hardwareMap.get(CRServo.class, "outtakeServo");
 
         //Shooter shooter = new Shooter(hardwareMap);
         //Intake intake = new Intake(hardwareMap);
@@ -85,6 +87,12 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
         waitForStart();
 
+        boolean driveType = true;
+
+        boolean hasUpdated = false;
+
+        boolean hasTurned = false;
+
         if (isStopRequested()) return;
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y + -gamepad2.left_stick_y / 2; // Y stick value is reversed
@@ -92,6 +100,15 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             double rx = gamepad1.right_stick_x + gamepad2.right_stick_x / 2;
 
             double CPR = 8192;
+
+            if (gamepad1.options && !hasUpdated) {
+                hasUpdated = true;
+                driveType = !driveType;
+            }
+
+            if (!gamepad1.options) {
+                hasUpdated = false;
+            }
 
             // Get the current position of the motor
             //int position = motor.getCurrentPosition();
@@ -113,6 +130,27 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
                 imu.recalibrateIMU();
             }
 
+            outtake.setPower(0);
+
+
+            if (gamepad1.b) {
+                outtake.setPower(1);
+            }
+
+            else if (gamepad1.a) {
+                outtake.setPower(-1);
+            }
+
+            outtakeServo.setPower(0);
+            
+            if (LTrigger > 0.01) {
+                outtakeServo.setPower(-1);
+            }
+
+            if (RTrigger > 0.01) {
+                outtakeServo.setPower(1);
+            }
+
             double botHeading = imu.getHeading(AngleUnit.RADIANS);
             double botHeadingMeasure = imu.getHeading(AngleUnit.DEGREES);
             telemetry.addLine("Field orientation is: " + botHeadingMeasure);
@@ -126,16 +164,32 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-            double frontLeftPower = (rotY + rotX + rx) / denominator;
-            double backLeftPower = (rotY - rotX + rx) / denominator;
-            double frontRightPower = (rotY - rotX - rx) / denominator;
-            double backRightPower = (rotY + rotX - rx) / denominator;
+            if (driveType) {
+                double frontLeftPower = y + rx + x;
+                double backLeftPower = y + rx - x;
+                double frontRightPower = y - rx - x;
+                double backRightPower = y - rx + x;
 
-            frontLeftMotor.setPower(frontLeftPower);
-            backLeftMotor.setPower(backLeftPower);
-            frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+                double max1 = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
+                double max2 = Math.max(Math.abs(frontRightPower), Math.abs(backRightPower));
+                double max3 = Math.max(max1, max2);
+
+                frontLeftMotor.setPower(frontLeftPower/max3);
+                backLeftMotor.setPower(backLeftPower/max3);
+                frontRightMotor.setPower(frontRightPower/max3);
+                backRightMotor.setPower(backRightPower/max3);
+            } else {
+                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                double frontLeftPower = (rotY + rotX + rx) / denominator;
+                double backLeftPower = (rotY - rotX + rx) / denominator;
+                double frontRightPower = (rotY - rotX - rx) / denominator;
+                double backRightPower = (rotY + rotX - rx) / denominator;
+
+                frontLeftMotor.setPower(frontLeftPower);
+                backLeftMotor.setPower(backLeftPower);
+                frontRightMotor.setPower(frontRightPower);
+                backRightMotor.setPower(backRightPower);
+            }
 
             telemetry.update();
             imu.update();
