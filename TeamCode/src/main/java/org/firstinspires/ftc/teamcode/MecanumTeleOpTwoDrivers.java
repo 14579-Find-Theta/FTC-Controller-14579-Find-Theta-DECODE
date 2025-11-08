@@ -91,8 +91,6 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
         boolean hasUpdated = false;
 
-        boolean hasTurned = false;
-
         if (isStopRequested()) return;
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y + -gamepad2.left_stick_y / 2; // Y stick value is reversed
@@ -101,12 +99,12 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
             double CPR = 8192;
 
-            if (gamepad1.options && !hasUpdated) {
-                hasUpdated = true;
+            if (gamepad1.back && !hasUpdated) {
                 driveType = !driveType;
+                hasUpdated = true;
             }
 
-            if (!gamepad1.options) {
+            if (!gamepad1.back) {
                 hasUpdated = false;
             }
 
@@ -118,16 +116,16 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
             //double Arm_Pos = -angle;
 
-            double LTrigger = gamepad2.left_trigger;
+            double LTrigger = gamepad1.left_trigger;
             //intake.runIntake(LTrigger);
-            double RTrigger = gamepad2.right_trigger;
+            double RTrigger = gamepad1.right_trigger;
             //shooter.outtakeShoot(RTrigger);
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on some controllers.
             if (gamepad1.start) {
-                imu.recalibrateIMU();
+                imu.resetPosAndIMU();
             }
 
             outtake.setPower(0);
@@ -165,10 +163,10 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             if (driveType) {
-                double frontLeftPower = y + rx + x;
-                double backLeftPower = y + rx - x;
-                double frontRightPower = y - rx - x;
-                double backRightPower = y - rx + x;
+                double frontLeftPower = -y + rx + x;
+                double backLeftPower = -y + rx - x;
+                double frontRightPower = -y - rx - x;
+                double backRightPower = -y - rx + x;
 
                 double max1 = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
                 double max2 = Math.max(Math.abs(frontRightPower), Math.abs(backRightPower));
@@ -180,10 +178,10 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
                 backRightMotor.setPower(backRightPower/max3);
             } else {
                 double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-                double frontLeftPower = (rotY + rotX + rx) / denominator;
-                double backLeftPower = (rotY - rotX + rx) / denominator;
-                double frontRightPower = (rotY - rotX - rx) / denominator;
-                double backRightPower = (rotY + rotX - rx) / denominator;
+                double frontLeftPower = (rotY - rotX + rx) / denominator;
+                double backLeftPower = (rotY + rotX + rx) / denominator;
+                double frontRightPower = (rotY + rotX - rx) / denominator;
+                double backRightPower = (rotY - rotX - rx) / denominator;
 
                 frontLeftMotor.setPower(frontLeftPower);
                 backLeftMotor.setPower(backLeftPower);
