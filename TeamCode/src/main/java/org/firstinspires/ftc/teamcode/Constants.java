@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(5);
+            .mass(10);
 
    // return new FollowerBuilder(followerConstants, hardwareMap)
          //       .pathConstraints(pathConstraints)
@@ -33,8 +33,8 @@ public class Constants {
             .forwardEncoder_HardwareMapName("leftFront")
             .strafeEncoder_HardwareMapName("rightRear")
             .IMU_HardwareMapName("imu")
-            .forwardPodY(8)
-            .strafePodX(8)
+            .forwardPodY(80.204)
+            .strafePodX(-183.5)
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
                             RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -44,12 +44,12 @@ public class Constants {
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
-            .rightFrontMotorName("rf")
-            .rightRearMotorName("rr")
+            .rightFrontMotorName("frontRightMotor")
+            .rightRearMotorName("backRightMotor")
             .xVelocity(7)
             .yVelocity(7)
-            .leftRearMotorName("lr")
-            .leftFrontMotorName("lf")
+            .leftRearMotorName("backLeftMotor")
+            .leftFrontMotorName("frontLeftMotor")
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
