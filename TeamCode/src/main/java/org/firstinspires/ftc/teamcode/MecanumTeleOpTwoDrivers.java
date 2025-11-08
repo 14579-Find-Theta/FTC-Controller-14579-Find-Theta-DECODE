@@ -93,9 +93,9 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
         if (isStopRequested()) return;
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y + -gamepad2.left_stick_y / 2; // Y stick value is reversed
-            double x = -gamepad1.left_stick_x + -gamepad2.left_stick_x / 2;
-            double rx = gamepad1.right_stick_x + gamepad2.right_stick_x / 2;
+            double y = -gamepad1.left_stick_y + -gamepad2.left_stick_y / 5; // Y stick value is reversed
+            double x = -gamepad1.left_stick_x + -gamepad2.left_stick_x / 5;
+            double rx = gamepad1.right_stick_x + gamepad2.right_stick_x / 5;
 
             double CPR = 8192;
 
@@ -116,9 +116,9 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
 
             //double Arm_Pos = -angle;
 
-            double LTrigger = gamepad1.left_trigger;
+            double LTrigger = gamepad2.left_trigger;
             //intake.runIntake(LTrigger);
-            double RTrigger = gamepad1.right_trigger;
+            double RTrigger = gamepad2.right_trigger;
             //shooter.outtakeShoot(RTrigger);
 
             // This button choice was made so that it is hard to hit on accident,
@@ -131,11 +131,11 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
             outtake.setPower(0);
 
 
-            if (gamepad1.b) {
-                outtake.setPower(1);
+            if (gamepad2.b) {
+                outtake.setPower(0.5);
             }
 
-            else if (gamepad1.a) {
+            else if (gamepad2.a) {
                 outtake.setPower(-1);
             }
 
@@ -171,6 +171,10 @@ public class MecanumTeleOpTwoDrivers extends LinearOpMode {
                 double max1 = Math.max(Math.abs(frontLeftPower), Math.abs(backLeftPower));
                 double max2 = Math.max(Math.abs(frontRightPower), Math.abs(backRightPower));
                 double max3 = Math.max(max1, max2);
+
+                if (max3<1) {
+                    max3 = 1;
+                }
 
                 frontLeftMotor.setPower(frontLeftPower/max3);
                 backLeftMotor.setPower(backLeftPower/max3);

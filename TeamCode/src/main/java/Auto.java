@@ -1,5 +1,6 @@
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -17,10 +18,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import java.io.CharArrayWriter;
-@TeleOp (name = "Auto", group = "LinearOpMode")
+@Autonomous (name = "Auto", group = "LinearOpMode")
 public class Auto extends LinearOpMode {
-
-
 
 
     @Override
@@ -31,12 +30,19 @@ public class Auto extends LinearOpMode {
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        boolean numeral = true;
 
 
+        waitForStart();
 
-        backLeftMotor.setPower(1);
-        backRightMotor.setPower(1);
-        frontRightMotor.setPower(1);
-        frontLeftMotor.setPower(1);
+
+        while (numeral) {
+            backLeftMotor.setPower(0.4);
+            backRightMotor.setPower(0.4);
+            frontRightMotor.setPower(0.4);
+            frontLeftMotor.setPower(0.4);
+
+
+        }
     }
 }
